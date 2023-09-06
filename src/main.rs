@@ -10,10 +10,11 @@ async fn main() {
 
     // region: --- Start Server
     let addr = SocketAddr::from(([127,0,0,1], 8080));
+    println!("->> LISTENING on {}\n", addr);
     axum::Server::bind(&addr)
         .serve(routes_hello.into_make_service())
         .await
         .unwrap();
-    println!("->> LISTENING on {addr}\n");
+        
     // endregion: --- Start Server
 }
