@@ -2,22 +2,30 @@
 
 use std::net::SocketAddr;
 
-use axum::{Router, routing::get, response::{Html, IntoResponse}, extract::{Query, Path}};
+use axum::{Router, routing::{get, get_service}, response::{Html, IntoResponse}, extract::{Query, Path}};
 use serde::Deserialize;
+use tower_http::services::ServeDir;
+
+mod error;
 
 #[tokio::main]
 async fn main() {
-    let routes_hello: Router = Router::new()
-    .merge(routes_hello());
+    let routes_all: Router = Router::new()
+    .merge(routes_hello())
+    .fallback_service(routes_static());
 
     // region -- Start Server
     let addr = SocketAddr::from(([127,0,0,1], 8080));
     println!("->> LISTENING on {addr}\n");
     axum::Server::bind(&addr)
-        .serve(routes_hello.into_make_service())
+        .serve(routes_all.into_make_service())
         .await
         .unwrap()
     // endregion -- Start Server
+}
+
+fn routes_static() -> Router {
+    Router::new().nest_service("/", get_service(ServeDir::new("./")))
 }
 
 // region: -- Routes Hello
