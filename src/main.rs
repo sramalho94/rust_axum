@@ -31,6 +31,6 @@ async fn handler_hello(Query(params): Query<HelloParams>) -> impl IntoResponse {
     println!("--> {:<12} - handler_hello - {params:?}", "HANDLER");
 
     let name = params.name.as_deref().unwrap_or("World!");
-    Html(format!("Hello <strong>World!!!</strong>"))
+    Html(format!("Hello <strong>{name}</strong>"))
 }
 // endregion: -- Handler Hello
